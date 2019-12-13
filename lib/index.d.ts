@@ -15,9 +15,16 @@ export declare class Message {
      * 监听
      * @param evtType 名称
      * @param handler 执行体
-     * @param _once 是否只相应一次
+     * @returns {Function} 销毁该方法
      */
-    on(evtType: string, handler: Function, once?: boolean): () => void;
+    on(evtType: string, handler: Function): () => void;
+    /**
+     * 监听 只执行一次
+     * @param evtType 名称
+     * @param handler 执行体
+     * @returns {Function} 销毁该方法
+     */
+    once(evtType: string, handler: Function): () => void;
     /**
      * 移除
      * @param evtType 名称
@@ -37,5 +44,4 @@ export declare class Message {
     emitFirst(evtType: string, ...args: any[]): void;
     call(evtObj: IEventHandle, args: any[]): void;
 }
-declare const _default: Message;
-export default _default;
+export {};

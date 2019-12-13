@@ -27,15 +27,35 @@ export class Message {
      * 监听
      * @param evtType 名称
      * @param handler 执行体
-     * @param _once 是否只相应一次
+     * @returns {Function} 销毁该方法
      */
-    on (evtType: string, handler: Function, once:boolean = false) {
+    on (evtType: string, handler: Function) {
         if (!this._evtObjs[evtType]) {
             this._evtObjs[evtType] = [];
         }
         this._evtObjs[evtType].push({
             handler,
-            once,
+            once: false,
+            called: false
+        });
+        return () => {
+            this.off(evtType, handler);
+        };
+    }
+
+    /**
+     * 监听 只执行一次
+     * @param evtType 名称
+     * @param handler 执行体
+     * @returns {Function} 销毁该方法
+     */
+    once (evtType: string, handler: Function) {
+        if (!this._evtObjs[evtType]) {
+            this._evtObjs[evtType] = [];
+        }
+        this._evtObjs[evtType].push({
+            handler,
+            once: true,
             called: false
         });
         return () => {
@@ -80,7 +100,6 @@ export class Message {
      * @param evtType 
      */
     emit (evtType: string, ...args: any[]) {
-        
         var handlers = this._evtObjs[evtType] || [];
         handlers.forEach((evtObj) => {
             this.call(evtObj, args);
@@ -107,7 +126,6 @@ export class Message {
             console.error(e.stack || e.message || e);
         }
     }
-
 }
 
 export default new Message();
